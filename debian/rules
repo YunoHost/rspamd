@@ -4,6 +4,12 @@
 
 .PHONY: override_dh_strip
 
+ifeq ($(shell uname -m),aarch64)
+ON_EXCEPT_FOR_ARM64 = OFF
+else
+ON_EXCEPT_FOR_ARM64 = ON
+endif
+
 export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 
 override_dh_auto_configure:
@@ -28,8 +34,8 @@ override_dh_auto_configure:
 		-DENABLE_GD=OFF \
 		-DENABLE_PCRE2=OFF \
 		-DENABLE_HIREDIS=ON \
-		-DENABLE_LUAJIT=ON \
-		-DENABLE_TORCH=ON \
+		-DENABLE_LUAJIT=$(ON_EXCEPT_FOR_ARM64) \
+		-DENABLE_TORCH=$(ON_EXCEPT_FOR_ARM64) \
 		-DENABLE_LIBUNWIND=ON \
 		-DWANT_SYSTEMD_UNITS=ON
 
